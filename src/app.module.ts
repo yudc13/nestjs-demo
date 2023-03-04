@@ -40,7 +40,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           password: configService.get(ConfigEnum.PASSWORD),
           database: configService.get(ConfigEnum.DATABASE),
           synchronize: configService.get(ConfigEnum.DB_SYNC),
-          entities: [],
+          entities: [`${__dirname}/**/*.entity.{ts,js}`],
           logging: ['error'],
         } as TypeOrmModuleOptions),
     }),

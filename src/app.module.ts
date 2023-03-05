@@ -1,14 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Global, Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigEnum } from './enum/config.enum';
+import { LoggerModule } from './logger/logger.module';
 import * as process from 'process';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,12 +43,14 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           database: configService.get(ConfigEnum.DATABASE),
           synchronize: configService.get(ConfigEnum.DB_SYNC),
           entities: [`${__dirname}/**/*.entity.{ts,js}`],
-          logging: true,
+          logging: false,
         } as TypeOrmModuleOptions),
     }),
     UserModule,
+    LoggerModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [Logger],
+  exports: [Logger],
 })
 export class AppModule {}

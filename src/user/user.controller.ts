@@ -17,10 +17,8 @@ import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto';
-import { HttpExceptionFilter } from '../filters/http-exception.filter';
 
 @Controller('user')
-@UseFilters(new HttpExceptionFilter())
 export class UserController {
   // private logger = new Logger(UserController.name);
 

@@ -13,6 +13,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 @Global()
 @Module({
   imports: [
+    // 配置文件校验
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath,

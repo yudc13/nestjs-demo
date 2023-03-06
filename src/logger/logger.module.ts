@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { utilities, WinstonModule } from 'nest-winston';
+import { LoggerService } from './logger.service';
 import * as winston from 'winston';
 
 @Module({
@@ -20,5 +21,7 @@ import * as winston from 'winston';
       }),
     }),
   ],
+  exports: [LoggerService],
+  providers: [LoggerService],
 })
 export class LoggerModule {}

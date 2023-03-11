@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -15,18 +16,21 @@ import { Profile } from './profile.entity';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ length: 50, comment: '用户名' })
+  @Column({ length: 50, comment: '用户名', unique: true })
   username: string;
   @Column({ length: 100, comment: '密码' })
   password: string;
 
-  @OneToOne(() => Profile, (profile) => profile.user)
+  @OneToOne(() => Profile, (profile) => profile.user, {
+    cascade: true,
+  })
+  @JoinColumn({ name: 'profile_id' })
   profile: Profile;
 
   @OneToMany(() => Logger, (log) => log.user)
   logs: Logger[];
 
-  @ManyToMany(() => Role, (role) => role.users)
+  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
   @JoinTable({ name: 'users_roles' })
   roles: Role[];
 }

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { QueryFailedError } from 'typeorm';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -25,11 +26,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    this.logger.error('--> error');
     response.status(status).json({
       statusCode: status,
-      timestamp: new Date().toISOString(),
+      params: request.params,
+      body: request.body,
       message: exception.message,
+      timestamp: new Date().toISOString(),
     });
   }
 }

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { CreateUserDto, UserPaginationDto } from './dto';
+import { Profile } from './profile.entity';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -7,11 +9,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async findAll() {
-    return this.userRepository.find({ select: ['id', 'username'] });
+  async findAll(current: number, pageSize: number, query: UserPaginationDto) {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .select(['user.id', 'user.username', 'profile'])
+      .where('user.username like :username', {
+        username: `%${query.username}%`,
+      })
+      .andWhere('profile.address like :address', {
+        address: `%${query.address}%`,
+      })
+      .skip((current - 1) * pageSize)
+      .take(pageSize)
+      .getMany();
   }
 
   async find(id: number) {
@@ -25,8 +39,7 @@ export class UserService {
       .getOne();
   }
 
-  async create(user: User) {
-    const u = await this.userRepository.create(user);
-    return this.userRepository.save(u);
+  async create(createUserDto: CreateUserDto) {
+    return await this.userRepository.save(createUserDto);
   }
 }

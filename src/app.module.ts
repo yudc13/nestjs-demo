@@ -44,7 +44,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           database: configService.get(ConfigEnum.DATABASE),
           synchronize: configService.get(ConfigEnum.DB_SYNC),
           entities: [`${__dirname}/**/*.entity.{ts,js}`],
-          logging: false,
+          logging: true,
         } as TypeOrmModuleOptions),
     }),
     UserModule,

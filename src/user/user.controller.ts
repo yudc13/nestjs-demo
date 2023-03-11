@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Inject,
   Logger,
   LoggerService,
   Param,
   Post,
+  Query,
   Req,
   UseFilters,
   UsePipes,
@@ -16,7 +18,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, UserPaginationDto } from './dto';
 
 @Controller('user')
 export class UserController {
@@ -32,8 +34,13 @@ export class UserController {
   }
 
   @Get()
-  getUsers() {
-    return this.userService.findAll();
+  getUsers(
+    @Query('current', new DefaultValuePipe(1)) current: number,
+    @Query('pageSize', new DefaultValuePipe(5)) pageSize: number,
+    @Query() params: UserPaginationDto,
+  ) {
+    console.log(current, pageSize, params);
+    return this.userService.findAll(current, pageSize, params);
   }
 
   @Get(':id')
@@ -43,9 +50,7 @@ export class UserController {
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
-    this.logger.log(createUserDto);
-    const user = createUserDto as User;
-    const result = await this.userService.create(user);
+    const result = await this.userService.create(createUserDto);
     return result.id;
   }
 }

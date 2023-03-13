@@ -11,10 +11,13 @@ import {
   Query,
   Req,
   UseFilters,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { AdminGuard } from '../guards/admin.guard';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
@@ -34,6 +37,7 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'), AdminGuard)
   getUsers(
     @Query('current', new DefaultValuePipe(1)) current: number,
     @Query('pageSize', new DefaultValuePipe(5)) pageSize: number,
@@ -44,8 +48,9 @@ export class UserController {
   }
 
   @Get(':id')
-  getUser(@Param('id') id: number) {
-    return this.userService.find(id);
+  @UseGuards(AuthGuard('jwt'))
+  async getUser(@Param('id') id: number) {
+    return await this.userService.find(id);
   }
 
   @Post()

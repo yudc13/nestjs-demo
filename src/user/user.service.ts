@@ -29,13 +29,21 @@ export class UserService {
   }
 
   async find(id: number) {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('user.roles', 'role')
+      .where('user.id = :id', { id })
+      .select(['user.id', 'user.username', 'profile', 'role'])
+      .getOne();
+  }
+
+  async findByNamePwd(username: string, password: string) {
     return this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.profile', 'profile', 'profile.photo = :photo', {
-        photo: '2',
-      })
-      .where('user.id = :id', { id })
-      .select(['user.id', 'user.username', 'profile'])
+      .leftJoinAndSelect('user.profile', 'profile')
+      .where('user.username = :username', { username })
+      .andWhere('user.password = :password', { password })
       .getOne();
   }
 

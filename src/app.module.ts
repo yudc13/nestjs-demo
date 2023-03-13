@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigEnum } from './enum/config.enum';
 import { LoggerModule } from './logger/logger.module';
+import { AuthModule } from './auth/auth.module';
 import * as process from 'process';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
@@ -49,6 +50,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
     }),
     UserModule,
     LoggerModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [Logger],

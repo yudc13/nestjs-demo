@@ -6,4 +6,6 @@ export enum ConfigEnum {
   PASSWORD = 'PASSWORD',
   DATABASE = 'DATABASE',
   DB_SYNC = 'DB_SYNC',
+
+  JWT_SECRET = 'JWT_SECRET',
 }

@@ -31,6 +31,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       params: request.params,
       body: request.body,
       message: exception.message,
+      errorInfo: exception.response,
       timestamp: new Date().toISOString(),
     });
   }

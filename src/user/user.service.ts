@@ -1,5 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { SignupUserDto } from '../auth/dto/signup-user.dto';
 import { CreateUserDto, UserPaginationDto } from './dto';
 import { Profile } from './profile.entity';
 import { User } from './user.entity';
@@ -38,16 +44,25 @@ export class UserService {
       .getOne();
   }
 
-  async findByNamePwd(username: string, password: string) {
+  async findByName(username: string) {
     return this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.profile', 'profile')
       .where('user.username = :username', { username })
-      .andWhere('user.password = :password', { password })
       .getOne();
   }
 
   async create(createUserDto: CreateUserDto) {
-    return await this.userRepository.save(createUserDto);
+    const user = await this.userRepository.create(createUserDto);
+    return await this.userRepository.save(user);
+  }
+
+  async register(signupUserDto: SignupUserDto) {
+    const user = await this.findByName(signupUserDto.username);
+    if (user) {
+      throw new ForbiddenException('用户已存在');
+    }
+    const userTmp = await this.userRepository.create(signupUserDto);
+    const result = await this.userRepository.save(userTmp);
+    return result.id;
   }
 }

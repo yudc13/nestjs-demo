@@ -10,7 +10,7 @@ export class AuthService {
   ) {}
 
   async signin(username: string, password: string) {
-    const user = await this.userService.findByNamePwd(username, password);
+    const user = await this.userService.findByName(username);
     if (user && user.password === password) {
       return await this.jwtService.signAsync({
         id: user.id,
@@ -21,6 +21,6 @@ export class AuthService {
   }
 
   signup(username: string, password: string) {
-    return this.userService.create({ username, password } as any);
+    return this.userService.register({ username, password });
   }
 }

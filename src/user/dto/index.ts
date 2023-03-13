@@ -28,10 +28,10 @@ export class CreateUserDto {
   password: string;
 
   @IsObject()
-  profile: CreateUserProfileDto;
+  profile?: CreateUserProfileDto;
 
   @IsArray()
-  roles: CreateRoleDto[];
+  roles?: CreateRoleDto[];
 }
 
 const UserDto = IntersectionType(CreateUserDto, CreateUserProfileDto);

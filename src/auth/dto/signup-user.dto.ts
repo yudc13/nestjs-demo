@@ -1,3 +1,3 @@
-import { SigninUserDto } from './signin-user.dto';
+import { SignInUserDto } from './signin-user.dto';
 
-export class SignupUserDto extends SigninUserDto {}
+export class SignupUserDto extends SignInUserDto {}

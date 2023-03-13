@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   Entity,
   JoinColumn,
@@ -8,6 +9,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import * as argon2 from 'argon2';
 import { Logger } from '../logger/logger.entity';
 import { Role } from '../role/role.entity';
 import { Profile } from './profile.entity';
@@ -33,4 +35,11 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users, { cascade: true })
   @JoinTable({ name: 'users_roles' })
   roles: Role[];
+
+  @BeforeInsert()
+  async signPassword() {
+    if (this.password) {
+      this.password = await argon2.hash(this.password);
+    }
+  }
 }

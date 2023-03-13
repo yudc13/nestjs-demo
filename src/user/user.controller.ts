@@ -17,7 +17,10 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { Roles } from '../decorators/roles.decorator';
+import { RoleEnum } from '../enum/role.enum';
 import { AdminGuard } from '../guards/admin.guard';
+import { Role } from '../role/role.entity';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
